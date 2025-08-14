@@ -4,11 +4,12 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import base64
 import cv2
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
 
-# Load the trained model
+# Load the trained model (load once at startup)
 model = load_model('facial_emotion_detection_model.h5')
 
 # Define class names (order must match training)
@@ -62,6 +63,8 @@ def predict():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 if __name__ == '__main__':
-    # For development; use gunicorn in production
-    app.run(host="0.0.0.0", port=5000)
+    # Use Render's assigned PORT if available
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
